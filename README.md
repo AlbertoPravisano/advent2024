@@ -3,7 +3,7 @@
 My advent of code 2024 challenge codes
 
 - [Day1](./day1/) <span style="color:yellow">\*\*</span>
-- [Day2](./day2/)
+- [Day2](./day2/) <span style="color:yellow">\*</span>
 - [Day3](./day3/)
 - [Day4](./day4/)
 - [Day5](./day5/)
