@@ -10,21 +10,29 @@ let safe = 0;
 input.forEach((row) => reports.push(row));
 
 /** @param {number[]} report */
-const isMonotonic = (report = []) => {
-  if (report.length <= 1) return true; // Array con 0 o 1 elemento sono sempre monotoni
+function isMonotonic(arr) {
+  const result = arr.reduce(
+    (acc, curr, index) => {
+      if (index === 0 || !acc.isValid) return acc; // Salta il primo elemento o interrompi se già non valido
 
-  const result = report.slice(1).reduce((acc, curr, index) => {
-    if (!acc) return false; // Se già trovato non monotono, fermati
-    const diff = curr - report[index];
-    if (diff === 0) return false; // Se due elementi consecutivi sono uguali
-    if (acc === "increasing" && diff < 0) return false; // Se crescente ma trova decrescita
-    if (acc === "decreasing" && diff > 0) return false; // Se decrescente ma trova crescita
-    if (acc === "unknown") acc = diff > 0 ? "increasing" : "decreasing"; // Determina la direzione
-    return acc;
-  }, "unknown");
+      const diff = curr - arr[index - 1];
+      if (diff === 0 || Math.abs(diff) > 3) {
+        acc.isValid = false; // Interrompi se i numeri sono uguali o differenza > 3
+      } else if (diff > 0) {
+        if (acc.direction === "decreasing") acc.isValid = false; // Contraddice la direzione
+        acc.direction = "increasing";
+      } else if (diff < 0) {
+        if (acc.direction === "increasing") acc.isValid = false; // Contraddice la direzione
+        acc.direction = "decreasing";
+      }
 
-  return result !== false;
-};
+      return acc;
+    },
+    { isValid: true, direction: null }
+  );
+
+  return result.isValid;
+}
 
 reports.forEach((report) => {
   if (isMonotonic(report.split(" ").map(Number))) {
@@ -32,7 +40,7 @@ reports.forEach((report) => {
   }
 });
 
-console.log("Part 1 result:", safe); // 592 too high
+console.log("Part 1 result:", safe);
 
 /*=============================================
 =                   Part 2                    =
